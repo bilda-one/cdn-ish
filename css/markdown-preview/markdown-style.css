@@ -1,0 +1,819 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+:root {
+  --markdown-font-family: "Lato", "Inter", "Aptos", "Noto Sans" !important;
+  --markdown-font-size: 14px;
+  --markdown-line-height: 1.4;
+  --markdown-block-border-radius: 0.8em;
+  --markdown-table-border-radius: 0.4em;
+  --markdown-body-padding: 52px;
+
+  /* #region Palette */
+  --palette-background-color-primary: var(--vscode-editor-background);
+  --palette-background-color-secondary: color-mix(in srgb, var(--vscode-editor-foreground) 4%, transparent);
+  --palette-background-color-tertiary: color-mix(in srgb, var(--vscode-editor-foreground) 8%, transparent);
+  --palette-background-color-accent: color-mix(in srgb, var(--vscode-textLink-foreground) 12%, transparent);
+  --palette-foreground-color-primary: var(--vscode-editor-foreground);
+  --palette-foreground-color-secondary: color-mix(in srgb, var(--vscode-editor-foreground) 70%, transparent);
+  --palette-foreground-color-muted: color-mix(in srgb, var(--vscode-editor-foreground) 45%, transparent);
+  --palette-foreground-color-accent: var(--vscode-textLink-foreground);
+  --palette-border-color-primary: color-mix(in srgb, var(--vscode-editor-foreground) 20%, transparent);
+  --palette-border-color-secondary: color-mix(in srgb, var(--vscode-editor-foreground) 12%, transparent);
+  --palette-border-color-strong: color-mix(in srgb, var(--vscode-editor-foreground) 45%, transparent);
+  --palette-border-color-accent: var(--vscode-focusBorder);
+  --palette-accent-color-blue: var(--vscode-charts-blue);
+  --palette-accent-color-green: var(--vscode-charts-green);
+  --palette-accent-color-yellow: var(--vscode-charts-yellow);
+  --palette-accent-color-orange: var(--vscode-charts-orange);
+  --palette-accent-color-red: var(--vscode-charts-red);
+  --palette-accent-color-purple: var(--vscode-charts-purple);
+  /* #endregion */
+
+  --markdown-border-color: var(--palette-border-color-primary);
+  --markdown-blockquote-bgcolor: var(--palette-background-color-secondary);
+  --markdown-mermaid-node-bgcolor: var(--palette-background-color-tertiary);
+  --markdown-mermaid-line-color: var(--palette-border-color-strong);
+  --markdown-mermaid-group-bgcolor: var(--palette-background-color-secondary);
+  --markdown-mermaid-note-bgcolor: var(--palette-background-color-accent);
+  --markdown-mermaid-label-color: var(--palette-foreground-color-primary);
+  --markdown-mermaid-label-muted-color: var(--palette-foreground-color-muted);
+  --markdown-mermaid-knockout-color: var(--palette-background-color-primary);
+  --markdown-mermaid-active-bgcolor: color-mix(in srgb, var(--palette-accent-color-blue) 25%, transparent);
+  --markdown-mermaid-crit-bgcolor: color-mix(in srgb, var(--palette-accent-color-red) 25%, transparent);
+}
+
+/* #region Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: calc(var(--markdown-font-size) * 2);
+}
+
+h2 {
+  font-size: calc(var(--markdown-font-size) * 1.5);
+}
+
+h3 {
+  font-size: calc(var(--markdown-font-size) * 1.3);
+}
+
+h4 {
+  font-size: calc(var(--markdown-font-size) * 1.2);
+}
+
+h5 {
+  font-size: calc(var(--markdown-font-size) * 1.1);
+}
+
+h6 {
+  font-size: var(--markdown-font-size);
+}
+/* #endregion */
+
+/* #region Tables */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 0.5px solid var(--markdown-border-color);
+  border-radius: var(--markdown-table-border-radius);
+  overflow: hidden;
+}
+
+th {
+  border: 0;
+  border-bottom: 0.5px dotted var(--markdown-border-color) !important;
+  background-color: var(--markdown-border-color) !important;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+table.frontmatter {
+  opacity: 0.3;
+}
+
+table.frontmatter td,
+table.frontmatter th {
+  padding: 0 0.5em;
+}
+
+/* Frontmatter lists (tags, aliases, ...) as inline, comma-separated text */
+table.frontmatter td ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.3em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+table.frontmatter td li:not(:last-child)::after {
+  content: ",";
+}
+
+th {
+  color: var(--palette-foreground-color-primary);
+  border-bottom-width: 3px;
+  border-color: var(--markdown-border-color);
+  opacity: 0.5;
+}
+
+td {
+  color: var(--palette-foreground-color-primary);
+  border-width: 0.5px;
+  border-color: var(--markdown-border-color);
+  border-style: dotted;
+}
+/* #endregion */
+
+/* #region Code Blocks */
+pre:not(.hljs),
+pre.hljs code > div {
+  padding: 1em 1.5em;
+  border-radius: var(--markdown-block-border-radius);
+  border: 2px solid var(--markdown-border-color);
+  outline: 2px solid transparent;
+  font-size: 0.9em;
+}
+
+pre:not(.hljs):hover,
+pre.hljs code > div:hover {
+  outline-color: var(--markdown-border-color);
+  transition: outline-color 0.3s ease;
+}
+
+.code-block-copy-button {
+  position: absolute;
+  top: calc(0.5em + 2px);
+  right: 0.5em;
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  border: none;
+  border-radius: 1em;
+  color: var(--markdown-border-color);
+  background-color: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.code-block-copy-button:hover {
+  color: var(--palette-foreground-color-primary);
+  transition: color 0.3s ease;
+}
+
+.code-block-copy-button > svg {
+  width: calc(1em * var(--markdown-line-height));
+  height: calc(1em * var(--markdown-line-height));
+}
+/* #endregion */
+
+/* #region Blockquotes */
+blockquote {
+  color: var(--palette-foreground-color-primary);
+  background-color: var(--markdown-blockquote-bgcolor);
+  padding: 0.5em 1em;
+  margin: 0 0 1em 0.5em;
+  border-left: 6px solid var(--markdown-border-color);
+  border-radius: var(--markdown-block-border-radius);
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+/* #endregion */
+
+/* #region Mermaid */
+
+/* Mermaid injects its theme as an `#svgId { ... }` <style> inside each SVG, so
+   every override below needs `!important` to outrank it — specificity alone
+   never wins against an id-scoped rule. */
+
+/* #region Mermaid — shared */
+.mermaid {
+  display: flex;
+  justify-content: center;
+  background-color: transparent;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+  font-family: var(--markdown-font-family) !important;
+}
+
+/* Flowchart-family labels are HTML inside <foreignObject>, so they take `color` */
+.mermaid .nodeLabel,
+.mermaid .edgeLabel,
+.mermaid .label,
+.mermaid foreignObject div,
+.mermaid foreignObject span {
+  color: var(--markdown-mermaid-label-color) !important;
+  font-family: var(--markdown-font-family) !important;
+}
+
+/* Every other diagram draws real <text>, which takes `fill` instead */
+.mermaid text,
+.mermaid text tspan {
+  fill: var(--markdown-mermaid-label-color) !important;
+  stroke: none !important;
+  font-family: var(--markdown-font-family) !important;
+}
+/* #endregion */
+
+/* #region Mermaid — flowchart */
+/* Nodes */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon,
+.mermaid .node path {
+  fill: var(--markdown-mermaid-node-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid .node rect {
+  rx: 8px;
+  ry: 8px;
+}
+
+.mermaid .node polygon {
+  fill: var(--markdown-border-color) !important;
+}
+
+.mermaid .cluster rect {
+  fill: var(--markdown-mermaid-group-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+  rx: 12px;
+  ry: 12px;
+}
+
+.mermaid .edgePath .path,
+.mermaid .flowchart-link {
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 1.5px !important;
+}
+
+.mermaid .edgeLabel .labelBkg,
+.mermaid .edgeLabel foreignObject div {
+  background-color: var(--palette-background-color-primary) !important;
+  opacity: 1 !important;
+}
+
+.mermaid .edgeLabel rect {
+  fill: var(--palette-background-color-primary) !important;
+  opacity: 1 !important;
+}
+
+.mermaid .edgeLabel p {
+  margin: 0;
+  padding: 0;
+  color: var(--palette-foreground-color-primary) !important;
+  background-color: transparent !important;
+}
+/* #endregion */
+
+/* #region Mermaid — markers */
+/* Solid by default: flowchart arrowheads, composition diamonds, message tips */
+.mermaid .arrowheadPath,
+.mermaid marker path {
+  fill: var(--markdown-mermaid-line-color) !important;
+  stroke: none !important;
+}
+
+/* Class diagram: inheritance triangles and aggregation diamonds read as hollow */
+.mermaid marker[id$="extensionStart"] path,
+.mermaid marker[id$="extensionEnd"] path,
+.mermaid marker[id$="aggregationStart"] path,
+.mermaid marker[id$="aggregationEnd"] path {
+  fill: var(--markdown-mermaid-knockout-color) !important;
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 1.5px !important;
+}
+
+/* ER crow's feet are drawn as open strokes, never filled shapes */
+.mermaid marker[id*="ONLY_ONE"] path,
+.mermaid marker[id*="_OR_ONE"] path,
+.mermaid marker[id*="_OR_MANY"] path,
+.mermaid marker[id*="MD_PARENT"] path {
+  fill: none !important;
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 1.5px !important;
+}
+
+.mermaid marker[id*="ZERO_OR"] circle {
+  fill: var(--markdown-mermaid-knockout-color) !important;
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 1.5px !important;
+}
+/* #endregion */
+
+/* #region Mermaid — sequence diagram */
+.mermaid rect.actor,
+.mermaid .actor-top rect,
+.mermaid .actor-bottom rect {
+  fill: var(--markdown-mermaid-node-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+  rx: 8px;
+  ry: 8px;
+}
+
+/* `actor` is on both the box and its label, so the text needs its own rule */
+.mermaid text.actor,
+.mermaid text.actor > tspan {
+  fill: var(--markdown-mermaid-label-color) !important;
+  font-weight: bold;
+}
+
+.mermaid .actor-man circle,
+.mermaid .actor-man line {
+  fill: var(--markdown-mermaid-node-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid .actor-line {
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 3 3 !important;
+}
+
+/* messageLine0 is a solid call, messageLine1 a dashed return */
+.mermaid .messageLine0 {
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 1.5px !important;
+  fill: none !important;
+}
+
+.mermaid .messageLine1 {
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 4 4 !important;
+  fill: none !important;
+}
+
+.mermaid .messageText {
+  fill: var(--markdown-mermaid-label-color) !important;
+}
+
+.mermaid circle.sequenceNumber {
+  fill: var(--markdown-mermaid-line-color) !important;
+  stroke: none !important;
+}
+
+.mermaid text.sequenceNumber {
+  fill: var(--markdown-mermaid-knockout-color) !important;
+}
+
+/* Activation bars */
+.mermaid .activation0,
+.mermaid .activation1,
+.mermaid .activation2 {
+  fill: var(--markdown-mermaid-node-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 1.5px !important;
+}
+
+.mermaid .note {
+  fill: var(--markdown-mermaid-note-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+  rx: 8px;
+  ry: 8px;
+}
+
+.mermaid .noteText,
+.mermaid .noteText > tspan {
+  fill: var(--markdown-mermaid-label-color) !important;
+}
+
+/* loop / alt / opt frames */
+.mermaid .loopLine {
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 3 3 !important;
+  fill: none !important;
+}
+
+.mermaid .labelBox {
+  fill: var(--markdown-mermaid-group-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 1.5px !important;
+}
+
+.mermaid .labelText,
+.mermaid .labelText > tspan {
+  fill: var(--markdown-mermaid-label-color) !important;
+  font-weight: bold;
+}
+
+.mermaid .loopText,
+.mermaid .loopText > tspan {
+  fill: var(--markdown-mermaid-label-muted-color) !important;
+}
+/* #endregion */
+
+/* #region Mermaid — class diagram */
+.mermaid g.classGroup rect,
+.mermaid .class-label rect {
+  fill: var(--markdown-mermaid-node-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+  rx: 8px;
+  ry: 8px;
+}
+
+.mermaid g.classGroup text,
+.mermaid .classLabel .label {
+  fill: var(--markdown-mermaid-label-color) !important;
+}
+
+.mermaid g.classGroup .title,
+.mermaid .classTitle {
+  font-weight: bold;
+}
+
+/* Compartment separators, in both the classic and the v2 renderer */
+.mermaid g.classGroup line,
+.mermaid line.divider {
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 1px !important;
+}
+
+/* Knockout behind an association label riding on the line */
+.mermaid .classLabel .box {
+  fill: var(--markdown-mermaid-knockout-color) !important;
+  stroke: none !important;
+  opacity: 1 !important;
+}
+
+.mermaid .relation {
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 1.5px !important;
+  fill: none !important;
+}
+/* #endregion */
+
+/* #region Mermaid — state diagram */
+.mermaid .statediagram-cluster rect {
+  fill: var(--markdown-mermaid-group-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+  rx: 12px;
+  ry: 12px;
+}
+
+.mermaid .statediagram-state .divider {
+  stroke: var(--markdown-border-color) !important;
+}
+
+/* Start/end/fork markers are solid ink, not surfaces — they override .node circle */
+.mermaid .node circle.state-start,
+.mermaid .node .fork-join {
+  fill: var(--markdown-mermaid-line-color) !important;
+  stroke: none !important;
+}
+
+.mermaid .node circle.state-end {
+  fill: var(--markdown-mermaid-knockout-color) !important;
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid .end-state-inner {
+  fill: var(--markdown-mermaid-line-color) !important;
+  stroke: none !important;
+}
+
+.mermaid .statediagram-note rect {
+  fill: var(--markdown-mermaid-note-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+  rx: 8px;
+  ry: 8px;
+}
+
+.mermaid .transition {
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 1.5px !important;
+  fill: none !important;
+}
+/* #endregion */
+
+/* #region Mermaid — entity relationship diagram */
+.mermaid .er.entityBox {
+  fill: var(--markdown-mermaid-node-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+}
+
+/* Attribute rows alternate, like a table body */
+.mermaid .er.attributeBoxOdd {
+  fill: var(--markdown-mermaid-knockout-color) !important;
+  stroke: var(--palette-border-color-secondary) !important;
+  stroke-width: 1px !important;
+}
+
+.mermaid .er.attributeBoxEven {
+  fill: var(--markdown-mermaid-group-bgcolor) !important;
+  stroke: var(--palette-border-color-secondary) !important;
+  stroke-width: 1px !important;
+}
+
+.mermaid .er.entityLabel {
+  fill: var(--markdown-mermaid-label-color) !important;
+  font-weight: bold;
+}
+
+.mermaid .er.relationshipLabel {
+  fill: var(--markdown-mermaid-label-muted-color) !important;
+}
+
+.mermaid .er.relationshipLabelBox {
+  fill: var(--markdown-mermaid-knockout-color) !important;
+  opacity: 1 !important;
+}
+
+.mermaid .er.relationshipLine {
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 1.5px !important;
+  fill: none !important;
+}
+/* #endregion */
+
+/* #region Mermaid — gantt chart */
+.mermaid .titleText {
+  fill: var(--markdown-mermaid-label-color) !important;
+  font-size: calc(var(--markdown-font-size) * 1.2);
+  font-weight: bold;
+}
+
+.mermaid .sectionTitle,
+.mermaid .sectionTitle0,
+.mermaid .sectionTitle1,
+.mermaid .sectionTitle2,
+.mermaid .sectionTitle3 {
+  fill: var(--markdown-mermaid-label-color) !important;
+  font-weight: bold;
+}
+
+/* Section bands alternate; mermaid cycles the index 0..3 down the chart */
+.mermaid rect[class^="section"] {
+  fill: transparent !important;
+  opacity: 1 !important;
+}
+
+.mermaid rect.section1,
+.mermaid rect.section3 {
+  fill: var(--markdown-mermaid-group-bgcolor) !important;
+}
+
+.mermaid .grid .tick line {
+  stroke: var(--palette-border-color-secondary) !important;
+}
+
+.mermaid .grid .tick text {
+  fill: var(--markdown-mermaid-label-muted-color) !important;
+}
+
+.mermaid .grid path {
+  stroke: none !important;
+}
+
+.mermaid .today {
+  stroke: var(--palette-accent-color-red) !important;
+  stroke-width: 2px !important;
+  fill: none !important;
+}
+
+/* Bars carry `task` plus a state and a section index (e.g. "task done0"),
+   so match on the state substring and let source order settle overlaps. */
+.mermaid rect[class*="task"] {
+  fill: var(--markdown-mermaid-node-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+  rx: 4px;
+  ry: 4px;
+}
+
+.mermaid rect[class*="done"] {
+  fill: var(--markdown-mermaid-group-bgcolor) !important;
+  stroke: var(--palette-border-color-secondary) !important;
+}
+
+.mermaid rect[class*="active"] {
+  fill: var(--markdown-mermaid-active-bgcolor) !important;
+  stroke: var(--palette-accent-color-blue) !important;
+}
+
+.mermaid rect[class*="crit"] {
+  fill: var(--markdown-mermaid-crit-bgcolor) !important;
+  stroke: var(--palette-accent-color-red) !important;
+}
+
+.mermaid .milestone {
+  fill: var(--palette-accent-color-purple) !important;
+  stroke: none !important;
+}
+/* #endregion */
+
+/* #region Mermaid — pie chart */
+.mermaid .pieTitleText {
+  fill: var(--markdown-mermaid-label-color) !important;
+  font-size: calc(var(--markdown-font-size) * 1.2);
+  font-weight: bold;
+}
+
+.mermaid .pieOuterCircle {
+  stroke: none !important;
+  fill: none !important;
+}
+
+.mermaid .pieCircle {
+  stroke: var(--markdown-mermaid-knockout-color) !important;
+  stroke-width: 2px !important;
+  opacity: 1 !important;
+}
+
+/* Slices and legend swatches walk the same 6-colour cycle. The legend groups
+   are siblings of the chart group, hence the +1 offset in their formula. */
+.mermaid .pieCircle:nth-of-type(6n + 1),
+.mermaid .legend:nth-of-type(6n + 2) rect {
+  fill: var(--palette-accent-color-blue) !important;
+}
+
+.mermaid .pieCircle:nth-of-type(6n + 2),
+.mermaid .legend:nth-of-type(6n + 3) rect {
+  fill: var(--palette-accent-color-green) !important;
+}
+
+.mermaid .pieCircle:nth-of-type(6n + 3),
+.mermaid .legend:nth-of-type(6n + 4) rect {
+  fill: var(--palette-accent-color-yellow) !important;
+}
+
+.mermaid .pieCircle:nth-of-type(6n + 4),
+.mermaid .legend:nth-of-type(6n + 5) rect {
+  fill: var(--palette-accent-color-orange) !important;
+}
+
+.mermaid .pieCircle:nth-of-type(6n + 5),
+.mermaid .legend:nth-of-type(6n + 6) rect {
+  fill: var(--palette-accent-color-red) !important;
+}
+
+.mermaid .pieCircle:nth-of-type(6n + 6),
+.mermaid .legend:nth-of-type(6n + 7) rect {
+  fill: var(--palette-accent-color-purple) !important;
+}
+
+.mermaid .legend rect {
+  stroke: none !important;
+}
+
+/* Percentages sit on top of a saturated slice */
+.mermaid .slice {
+  fill: var(--markdown-mermaid-knockout-color) !important;
+  font-weight: bold;
+}
+
+.mermaid .legend text {
+  fill: var(--markdown-mermaid-label-color) !important;
+}
+/* #endregion */
+
+/* #region Mermaid — git graph */
+/* Branch index only reaches the shapes through this custom property */
+.mermaid .commit0,
+.mermaid .commit6,
+.mermaid .arrow0,
+.mermaid .arrow6 {
+  --markdown-mermaid-git-color: var(--palette-accent-color-blue);
+}
+
+.mermaid .commit1,
+.mermaid .commit7,
+.mermaid .arrow1,
+.mermaid .arrow7 {
+  --markdown-mermaid-git-color: var(--palette-accent-color-green);
+}
+
+.mermaid .commit2,
+.mermaid .arrow2 {
+  --markdown-mermaid-git-color: var(--palette-accent-color-yellow);
+}
+
+.mermaid .commit3,
+.mermaid .arrow3 {
+  --markdown-mermaid-git-color: var(--palette-accent-color-orange);
+}
+
+.mermaid .commit4,
+.mermaid .arrow4 {
+  --markdown-mermaid-git-color: var(--palette-accent-color-red);
+}
+
+.mermaid .commit5,
+.mermaid .arrow5 {
+  --markdown-mermaid-git-color: var(--palette-accent-color-purple);
+}
+
+.mermaid circle[class*="commit"] {
+  fill: var(--markdown-mermaid-git-color, var(--palette-accent-color-blue)) !important;
+  stroke: var(--markdown-mermaid-knockout-color) !important;
+  stroke-width: 2px !important;
+}
+
+/* `path.arrow`, not [class*="arrow"] — that would also catch .arrowheadPath */
+.mermaid path.arrow {
+  stroke: var(--markdown-mermaid-git-color, var(--markdown-mermaid-line-color)) !important;
+  fill: none !important;
+}
+
+.mermaid line.branch,
+.mermaid .branch {
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 1.5px !important;
+}
+
+/* Labels stay neutral so they read against any branch colour */
+.mermaid .commit-label-bkg,
+.mermaid .branch-label-bkg {
+  fill: var(--markdown-mermaid-knockout-color) !important;
+  opacity: 1 !important;
+}
+
+.mermaid .commit-label,
+.mermaid .commit-id,
+.mermaid .commit-msg,
+.mermaid .branch-label,
+.mermaid .tag-label {
+  fill: var(--markdown-mermaid-label-color) !important;
+}
+
+.mermaid polygon[class*="tag"] {
+  fill: var(--markdown-mermaid-node-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 1.5px !important;
+}
+/* #endregion */
+
+/* #region Mermaid — mindmap */
+.mermaid [class*="section-"] rect,
+.mermaid [class*="section-"] path,
+.mermaid [class*="section-"] circle,
+.mermaid [class*="section-"] polygon {
+  fill: var(--markdown-mermaid-node-bgcolor) !important;
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid [class*="section-"] line {
+  stroke: var(--markdown-border-color) !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid [class*="section-"] text {
+  fill: var(--markdown-mermaid-label-color) !important;
+}
+
+.mermaid .section-root rect,
+.mermaid .section-root path,
+.mermaid .section-root circle,
+.mermaid .section-root polygon {
+  fill: var(--palette-background-color-accent) !important;
+  stroke: var(--palette-border-color-accent) !important;
+}
+
+/* Mermaid tapers mindmap edges from 17px down by depth; flatten them instead */
+.mermaid .edge,
+.mermaid [class*="edge-depth-"] {
+  stroke: var(--markdown-mermaid-line-color) !important;
+  stroke-width: 2px !important;
+  fill: none !important;
+}
+
+.mermaid [class*="section-edge-"] {
+  stroke: var(--markdown-mermaid-line-color) !important;
+}
+/* #endregion */
+/* #endregion */
+
+body.showEditorSelection :not(tr, ul, ol).code-active-line:before,
+body.showEditorSelection :not(tr, ul, ol).code-line:hover:before {
+  display: none;
+}
