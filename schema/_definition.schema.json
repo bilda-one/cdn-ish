@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/main/schema/_definition.schema.json",
+  "title": "Shared definitions",
+  "description": "Value types reached by $ref from the sibling schemas in this folder. Validates nothing on its own, so no document points its $schema here. A name is plain when the type is generic and tool-prefixed when its rule comes from one tool.",
+  "definitions": {
+    "nonBlankString": {
+      "type": "string",
+      "description": "Text that is neither empty nor padded with leading or trailing whitespace.",
+      "pattern": "^\\S(.*\\S)?$"
+    },
+    "resticTag": {
+      "type": "string",
+      "description": "Restic tag. Restic splits a --tag value on commas, so a comma here would silently turn one tag into two. Leading and trailing whitespace is rejected for the same reason: it survives into the snapshot, where it is invisible and makes the tag impossible to match by eye.",
+      "pattern": "^[^,\\s]([^,]*[^,\\s])?$"
+    },
+    "windowsAbsolutePath": {
+      "type": "string",
+      "description": "Absolute Windows path: starts with a %VAR% reference, a drive root (C:\\ or C:/), or a UNC share (\\\\server\\share). A relative path is rejected because the consuming script's working directory is not guaranteed. What a %VAR% expands to is not checked here.",
+      "pattern": "^(%[^%\\\\/]+%|[A-Za-z]:[\\\\/]|\\\\\\\\[^\\\\/]+[\\\\/])"
+    }
+  }
+}

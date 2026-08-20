@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/main/schema/restic-backup.schema.json",
+  "title": "Restic backup definition",
+  "description": "Backup definitions for the standalone Invoke-Backup.ps1 restic script. One 'backups' entry produces one restic snapshot containing all of its paths. Paths and the repository use %VAR% environment variable syntax, expanded repeatedly so a variable pointing at another variable resolves.",
+  "type": "object",
+  "required": ["repository", "backups"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "URL of this schema."
+    },
+    "repository": {
+      "description": "Restic repository, passed as --repo. Either a local path or a restic backend URL (sftp:, s3:, rest:, b2:, rclone: ...), which is why it is not held to the stricter path rule. Supports %VAR% expansion.",
+      "examples": ["%RESTIC_REPO%", "%BackupPath%", "%OneDrive%\\.backup"],
+      "allOf": [{ "$ref": "_definition.schema.json#/definitions/nonBlankString" }]
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags added to every snapshot. May be omitted or empty.",
+      "uniqueItems": true,
+      "examples": ["app", "data", "config"],
+      "items": { "$ref": "_definition.schema.json#/definitions/resticTag" }
+    },
+    "backups": {
+      "type": "array",
+      "description": "Backup definitions. Each entry is one restic snapshot.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "paths"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "description": "Backup name. Selects the backup on the command line and is added as a snapshot tag, so it has to be tag-safe.",
+            "allOf": [{ "$ref": "_definition.schema.json#/definitions/resticTag" }]
+          },
+          "tags": {
+            "type": "array",
+            "description": "Tags added to this snapshot on top of the global ones. May be omitted or empty.",
+            "uniqueItems": true,
+            "items": { "$ref": "_definition.schema.json#/definitions/resticTag" }
+          },
+          "paths": {
+            "type": "array",
+            "description": "Files or folders to back up, passed to restic as backup targets. Supports %VAR% expansion. To keep a single file out of a large folder, name the file itself instead of its folder.",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "_definition.schema.json#/definitions/windowsAbsolutePath" }
+          },
+          "exclude": {
+            "type": "array",
+            "description": "Restic exclude patterns applied to every path of this backup, passed as --exclude. These are globs rather than paths, so they are only checked for being non-blank.",
+            "uniqueItems": true,
+            "examples": ["Thumbs.db", "node_modules", "temp"],
+            "items": { "$ref": "_definition.schema.json#/definitions/nonBlankString" }
+          }
+        }
+      }
+    }
+  }
+}
