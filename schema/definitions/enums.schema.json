@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/definitions/enums.schema.json",
+  "description": "Value enums reached by $ref from the sibling schemas. Validates nothing on its own, so no document points its $schema here.",
+  "title": "Shared Schema Enums",
+  "type": "object",
+  "definitions": {
+    "apiRequests": {
+      "httpMethod": {
+        "type": "string",
+        "description": "HTTP method used in an API request.",
+        "enum": ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
+      },
+      "contentType": {
+        "type": "string",
+        "description": "Content type used in an API request.",
+        "enum": [
+          "application/json",
+          "application/xml",
+          "application/x-www-form-urlencoded",
+          "multipart/form-data",
+          "text/plain",
+          "text/html",
+          "text/csv"
+        ]
+      },
+      "authenticationType": {
+        "type": "string",
+        "description": "Authentication type used in an API request.",
+        "enum": ["Basic", "Bearer", "ApiKey", "OAuth2", "None"]
+      },
+      "httpStatusCode": {
+        "type": "integer",
+        "enum": [
+          200, 201, 202, 204, 400, 401, 403, 404, 409, 422, 500, 502, 503
+        ]
+      }
+    }
+  }
+}
