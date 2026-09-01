@@ -11,7 +11,10 @@ https://raw.githubusercontent.com/bilda-one/cdn-ish/main/<path>
 | File | Type | Description | URL |
 | --- | --- | --- | --- |
 | [`markdown-style.css`](css/markdown-preview/markdown-style.css) | CSS | An override layer on top of VS Code's built-in markdown preview styling | [url](https://cdn.jsdelivr.net/gh/bilda-one/cdn-ish@main/css/markdown-preview/markdown-style.css)[^1] |
+| [`publish.schema.json`](https://github.com/bilda-one/cdn-ish/blob/main/schema/publish.schema.json) | JSON Schema | Hapi project publishing manifest | [url](https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/publish.schema.json) |
+| [`producers.schema.json`](https://github.com/bilda-one/cdn-ish/blob/main/schema/producers.schema.json) | JSON Schema | Payload producer registry | [url](https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/producers.schema.json) |
 | [`restic-backup.schema.json`](https://github.com/bilda-one/cdn-ish/blob/main/schema/restic-backup.schema.json) | JSON Schema | Backup definitions for restic batch script | [url](https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/restic-backup.schema.json) |
+| [`scoop-config.schema.json`](https://github.com/bilda-one/cdn-ish/blob/main/schema/scoop-config.schema.json) | JSON Schema | Scoop producer manifest configuration | [url](https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/scoop-config.schema.json) |
 | [`types.schema.json`](https://github.com/bilda-one/cdn-ish/blob/main/schema/definitions/types.schema.json) | JSON schema definition[^2] | Value types (i.e. string shapes and their patterns) | [url](https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/definitions/types.schema.json) |
 | [`enums.schema.json`](https://github.com/bilda-one/cdn-ish/blob/main/schema/definitions/enums.schema.json) | JSON schema definition[^2] | Value enums (closed lists of allowed values) | [url](https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/definitions/enums.schema.json) |
 

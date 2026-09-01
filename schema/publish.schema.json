@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/publish.schema.json",
+  "title": "Hapi project publishing manifest",
+  "description": "Declares project-built applications and the channel through which Neter.Hapi publishes them.",
+  "type": "object",
+  "required": ["$schema", "name", "channel", "apps"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/publish.schema.json"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "channel": { "enum": ["scoop", "psresource"] },
+    "defaults": { "$ref": "#/definitions/appConfig" },
+    "apps": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "minLength": 1 },
+      "additionalProperties": { "$ref": "#/definitions/app" }
+    }
+  },
+  "definitions": {
+    "nonEmptyStringOrNull": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "suggestValue": {
+      "type": ["string", "array"],
+      "minLength": 1,
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "shortcuts": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 2,
+        "items": { "type": "string", "minLength": 1 }
+      }
+    },
+    "appConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "displayName": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "version": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+){0,2}$"
+        },
+        "source": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "mainFile": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "description": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "package": { "type": ["string", "null"], "enum": ["zip", "flat", null] },
+        "license": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "repository": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "resourceType": { "type": ["string", "null"], "enum": ["module", "script", null] },
+        "suggest": {
+          "type": ["object", "null"],
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/definitions/suggestValue" }
+        },
+        "shortcuts": { "$ref": "#/definitions/shortcuts" },
+        "pre_install": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "post_install": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "pre_uninstall": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "post_uninstall": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "installer": { "$ref": "#/definitions/nonEmptyStringOrNull" },
+        "uninstaller": { "$ref": "#/definitions/nonEmptyStringOrNull" }
+      }
+    },
+    "app": {
+      "allOf": [
+        { "$ref": "#/definitions/appConfig" },
+        { "type": "object", "required": ["version", "source"] }
+      ]
+    }
+  }
+}

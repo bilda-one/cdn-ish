@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/producers.schema.json",
+  "title": "Payload producer registry",
+  "description": "Declares payload producers, their source repositories, and whether they generate Scoop manifests.",
+  "type": "object",
+  "required": ["$schema", "producers"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "URL of this schema.",
+      "const": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/producers.schema.json"
+    },
+    "producers": {
+      "type": "array",
+      "description": "Payload folders known to the repository.",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["name", "scoop"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "description": "Folder inside the payload root described by this entry.",
+            "allOf": [{ "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }]
+          },
+          "source": {
+            "description": "Producer repository relative to the repositories root.",
+            "allOf": [{ "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }]
+          },
+          "scoop": {
+            "type": "boolean",
+            "description": "Whether this producer participates in Scoop manifest generation."
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "scoop": { "const": true } } },
+            "then": { "required": ["source"] }
+          }
+        ]
+      }
+    }
+  }
+}
