@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/kameleon-animation.schema.json",
+  "title": "Kameleon animation resource",
+  "description": "Declares the inline console animations Kameleon.Animation can render: the frame characters each one cycles through and the colours it uses by default.",
+  "type": "object",
+  "required": ["$schema", "animations"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/kameleon-animation.schema.json"
+    },
+    "animations": { "$ref": "#/definitions/animationArray" }
+  },
+  "definitions": {
+    "animationArray": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/animation" }
+    },
+    "animation": {
+      "type": "object",
+      "required": ["name", "type", "chars", "colors"],
+      "properties": {
+        "name": {
+          "description": "The name of the animation.",
+          "allOf": [
+            { "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the animation.",
+          "enum": ["inlineHighlight", "inlinePulse", "inlineFrames"]
+        },
+        "chars": {
+          "type": "array",
+          "description": "The characters used in the animation.",
+          "items": { "type": "string" }
+        },
+        "colors": {
+          "type": "object",
+          "description": "Default colours, overridable by the caller.",
+          "required": ["color", "accentColor", "accentColor2"],
+          "properties": {
+            "color": {
+              "type": "string",
+              "description": "The main color of the animation."
+            },
+            "accentColor": {
+              "type": "string",
+              "description": "The accent color of the animation."
+            },
+            "accentColor2": {
+              "type": "string",
+              "description": "The second accent color of the animation."
+            }
+          }
+        }
+      }
+    }
+  }
+}
