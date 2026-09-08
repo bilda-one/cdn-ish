@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/psprofiles-config.schema.json",
+  "title": "PowerShell profile configuration",
+  "description": "Declares the named profile configurations Initialize-PSProfile.ps1 can apply to a session: the modules it imports, the aliases it registers, its PSReadLine settings and its prompt. baseConfiguration is merged into the selected configuration, which wins on every key it sets itself.",
+  "type": "object",
+  "required": ["$schema", "defaultConfigurationId", "configuration"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/psprofiles-config.schema.json"
+    },
+    "defaultConfigurationId": {
+      "description": "Key in `configuration` applied when the caller passes no -ProfileId.",
+      "allOf": [{ "$ref": "#/definitions/configurationId" }]
+    },
+    "baseConfiguration": {
+      "description": "Settings merged into every configuration. A key the selected configuration sets itself is not overwritten; nested objects are merged key by key.",
+      "allOf": [{ "$ref": "#/definitions/profileSettings" }]
+    },
+    "configuration": {
+      "type": "object",
+      "description": "The profile configurations, keyed by the identifier -ProfileId selects.",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/definitions/configurationId" },
+      "additionalProperties": { "$ref": "#/definitions/profileSettings" }
+    }
+  },
+  "definitions": {
+    "configurationId": {
+      "description": "Identifier of a profile configuration: letters, digits, underscore and hyphen.",
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "profileSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Display name, applied as the console window title.",
+          "allOf": [{ "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }]
+        },
+        "modules": {
+          "type": "array",
+          "description": "Modules imported when the profile loads. A module that fails to import is reported through $ProfileError, not thrown.",
+          "items": { "$ref": "#/definitions/module" }
+        },
+        "aliases": {
+          "type": "array",
+          "description": "Aliases registered in the global scope, replacing any alias of the same name.",
+          "items": { "$ref": "#/definitions/alias" }
+        },
+        "PSReadLine": { "$ref": "#/definitions/psReadLine" },
+        "prompt": {
+          "description": "Prompt style passed to Build-Prompt. Ignored with a warning when that command is not available.",
+          "allOf": [{ "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }]
+        }
+      }
+    },
+    "module": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Module name.",
+          "allOf": [{ "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }]
+        },
+        "repository": {
+          "description": "PSResource repository the module is published to. Documentation only - the import resolves through PSModulePath.",
+          "allOf": [{ "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }]
+        },
+        "version": {
+          "description": "Version to import. Documentation only - the import takes whatever version resolves first.",
+          "allOf": [{ "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }]
+        }
+      }
+    },
+    "alias": {
+      "type": "object",
+      "required": ["name", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Alias name.",
+          "allOf": [{ "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }]
+        },
+        "value": {
+          "description": "Command or cmdlet the alias points to.",
+          "allOf": [{ "$ref": "definitions/types.schema.json#/definitions/nonEmptyString" }]
+        }
+      }
+    },
+    "psReadLine": {
+      "type": "object",
+      "description": "PSReadLine settings applied through Set-PSReadLineOption.",
+      "additionalProperties": false,
+      "properties": {
+        "predictionViewStyle": {
+          "type": "string",
+          "description": "How prediction suggestions are rendered.",
+          "enum": ["InlineView", "ListView"]
+        },
+        "colors": {
+          "type": "object",
+          "description": "PSReadLine token colours, keyed by token name (Command, Parameter, String, ...).",
+          "additionalProperties": { "type": "string" }
+        },
+        "keyHandlers": {
+          "type": "array",
+          "description": "Named key handlers to bind. Only the names Initialize-PSProfile.ps1 implements do anything; an unknown name is ignored silently.",
+          "items": {
+            "type": "string",
+            "enum": ["help"]
+          }
+        }
+      }
+    }
+  }
+}
