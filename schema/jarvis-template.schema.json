@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-template.schema.json",
+  "title": "Šablona přepisu Jarvise",
+  "description": "Soubor šablony pod %LOCALAPPDATA%\\Jarvis\\templates\\<název>.json, nebo plán pro `jarvis run --plan`. Schéma hlídá tvar souboru; co zkontroluje až Jarvis sám: id kroků jsou jedinečná, recap()/terms() ukazují na dřívější krok, `result` je krok transcribe, po delete-upload už žádný transcribe nenásleduje, v `base` není jméno člověka a složený context nemá přes 10 000 znaků.",
+  "type": "object",
+  "required": [
+    "name",
+    "base",
+    "steps",
+    "result"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "description": "Odkaz na tohle schéma pro editor. Jarvis ho ignoruje.",
+      "type": "string",
+      "const": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-template.schema.json"
+    },
+    "name": {
+      "description": "Název šablony — zároveň název souboru bez přípony .json a hodnota pro `jarvis run --template`.",
+      "allOf": [
+        {
+          "$ref": "definitions/types.schema.json#/definitions/nonEmptyString"
+        },
+        {
+          "pattern": "^[^\\\\/:*?\"<>|]+$",
+          "not": {
+            "enum": [
+              ".",
+              ".."
+            ]
+          }
+        }
+      ]
+    },
+    "base": {
+      "description": "Statický základ, který přidá každý krok se zdrojem `base`. Jméno člověka sem nepatří nikdy, ani s --allow-names.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "general": {
+          "description": "Páry klíč–hodnota pro poskytovatele (např. domain, meeting_type, languages). Opakuje-li se klíč, vyhraje pozdější.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string",
+                "minLength": 1
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "text": {
+          "description": "Volný popis schůzky.",
+          "type": "string"
+        },
+        "terms": {
+          "description": "Pevný seznam termínů. Pozor na tvar celého jména: \"Release Train\" strážce odmítne, \"release train\" projde.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "steps": {
+      "description": "Lineární seznam kroků, provádí se v tomhle pořadí.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/step"
+      }
+    },
+    "result": {
+      "description": "Id kroku transcribe, ze kterého vznikne Transcript.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/stepId"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "stepId": {
+      "description": "1–32 znaků z A–Z a–z 0–9 . _ -, začíná písmenem nebo číslicí.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,31}$"
+    },
+    "contextSource": {
+      "description": "base, adhoc, roster, inline, recap(<id dřívějšího kroku>) nebo terms(<id dřívějšího kroku>).",
+      "type": "string",
+      "pattern": "^(base|adhoc|roster|inline|(recap|terms)\\([A-Za-z0-9][A-Za-z0-9._-]{0,31}\\))$"
+    },
+    "step": {
+      "type": "object",
+      "required": [
+        "id",
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/stepId"
+        },
+        "type": {
+          "description": "transcribe = jeden průchod poskytovatelem; delete-upload = smaže upload tohoto Recordingu u poskytovatele.",
+          "enum": [
+            "transcribe",
+            "delete-upload"
+          ]
+        },
+        "context": {
+          "description": "Zdroje contextu v pořadí skládání: texty se spojí mezerou, termíny se sjednotí. recap() dávej na konec — rozpočet se počítá z toho, co je před ním.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/contextSource"
+          }
+        },
+        "inline": {
+          "description": "Text, který přidá zdroj `inline` tohoto kroku.",
+          "type": "string"
+        },
+        "model": {
+          "description": "Model jen pro tenhle krok (např. stt-async-v5). Bez něj platí konfigurace.",
+          "type": "string",
+          "minLength": 1
+        },
+        "language_hints": {
+          "description": "Jazyky jen pro tenhle krok (např. [\"cs\", \"en\"]). Bez nich platí konfigurace.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "track": {
+          "description": "Track, nad kterým krok běží (mic, loopback, loopback2, …). Bez něj běží nad všemi.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "if": {
+        "properties": {
+          "type": {
+            "const": "delete-upload"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "context": false,
+          "inline": false,
+          "model": false,
+          "language_hints": false,
+          "track": false
+        }
+      }
+    }
+  }
+}
