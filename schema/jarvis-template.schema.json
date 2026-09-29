@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-template.schema.json",
   "title": "Šablona přepisu Jarvise",
-  "description": "Soubor šablony pod %LOCALAPPDATA%\\Jarvis\\templates\\<název>.json, nebo plán pro `jarvis run --plan`. Schéma hlídá tvar souboru; co zkontroluje až Jarvis sám: id kroků jsou jedinečná, recap()/terms() ukazují na dřívější krok, `result` je krok transcribe, po delete-upload už žádný transcribe nenásleduje, v `base` není jméno člověka a složený context nemá přes 10 000 znaků.",
+  "description": "Soubor šablony pod %LOCALAPPDATA%\\Jarvis\\templates\\<název>.json, nebo plán pro `jarvis run --plan`. Schéma hlídá tvar souboru; co zkontroluje až Jarvis sám: id kroků jsou jedinečná, recap()/terms() ukazují na dřívější krok, `result` je krok transcribe, agent(<id>) a vstup agenta ukazují na dřívější krok, po delete-upload už žádný transcribe nenásleduje, Fragment z glossary()/text() existuje, v `base` ani ve Fragmentu není jméno člověka (bez JARVIS_ALLOW_NAMES) a složený context nemá přes 10 000 znaků.",
   "type": "object",
   "required": [
     "name",
@@ -35,7 +35,7 @@
       ]
     },
     "base": {
-      "description": "Statický základ, který přidá každý krok se zdrojem `base`. Jméno člověka sem nepatří nikdy, ani s --allow-names.",
+      "description": "Statický základ, který přidá každý krok se zdrojem `base`. Jméno člověka sem nepatří — Jarvis ho odmítne, pokud není zapnuté globální JARVIS_ALLOW_NAMES.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -98,9 +98,9 @@
       "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,31}$"
     },
     "contextSource": {
-      "description": "base, adhoc, roster, inline, recap(<id dřívějšího kroku>) nebo terms(<id dřívějšího kroku>).",
+      "description": "base, adhoc, roster, inline, recap(<id dřívějšího kroku>), terms(<id dřívějšího kroku>), agent(<id dřívějšího kroku agenta>) — co krok agenta složil, glossary(<Fragment>) — pojem na řádek do terms —, text(<Fragment>) — obsah do text — nebo markers — texty Markerů nahrávky do text, všechny typy kromě review — či markers(<typ>) — jen Markery toho typu (todo, important, decision, review). Fragment je soubor <název>.md ve složce %LOCALAPPDATA%\\Jarvis\\fragments; název má 1–64 znaků z A–Z a–z 0–9 . _ - a začíná písmenem nebo číslicí.",
       "type": "string",
-      "pattern": "^(base|adhoc|roster|inline|(recap|terms)\\([A-Za-z0-9][A-Za-z0-9._-]{0,31}\\))$"
+      "pattern": "^(base|adhoc|roster|inline|markers|markers\\((todo|important|decision|review)\\)|(recap|terms|agent)\\([A-Za-z0-9][A-Za-z0-9._-]{0,31}\\)|(glossary|text)\\([A-Za-z0-9][A-Za-z0-9._-]{0,63}\\))$"
     },
     "step": {
       "type": "object",
@@ -114,10 +114,11 @@
           "$ref": "#/definitions/stepId"
         },
         "type": {
-          "description": "transcribe = jeden průchod poskytovatelem; delete-upload = smaže upload tohoto Recordingu u poskytovatele.",
+          "description": "transcribe = jeden průchod poskytovatelem; delete-upload = smaže upload tohoto Recordingu u poskytovatele; agent = zeptá se agenta (Claude Code CLI, bez nástrojů) a složí context pro pozdější krok transcribe přes agent(<id>).",
           "enum": [
             "transcribe",
-            "delete-upload"
+            "delete-upload",
+            "agent"
           ]
         },
         "context": {
@@ -132,7 +133,7 @@
           "type": "string"
         },
         "model": {
-          "description": "Model jen pro tenhle krok (např. stt-async-v5). Bez něj platí konfigurace.",
+          "description": "Model jen pro tenhle krok — u transcribe model přepisu (např. stt-async-v5), u agent model agenta (např. sonnet). Bez něj platí konfigurace.",
           "type": "string",
           "minLength": 1
         },
@@ -148,24 +149,104 @@
           "description": "Track, nad kterým krok běží (mic, loopback, loopback2, …). Bez něj běží nad všemi.",
           "type": "string",
           "minLength": 1
-        }
-      },
-      "if": {
-        "properties": {
-          "type": {
-            "const": "delete-upload"
+        },
+        "prompt": {
+          "description": "Úkol pro agenta (jen krok agent): text, nebo {\"ref\": \"<Fragment>\"}.",
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "object",
+              "required": [
+                "ref"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "ref": {
+                  "$ref": "#/definitions/fragmentName"
+                }
+              }
+            }
+          ]
+        },
+        "input": {
+          "description": "Co agent dostane, v tomhle pořadí (jen krok agent).",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/agentInput"
           }
         }
       },
-      "then": {
-        "properties": {
-          "context": false,
-          "inline": false,
-          "model": false,
-          "language_hints": false,
-          "track": false
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "delete-upload"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "context": false,
+              "inline": false,
+              "model": false,
+              "language_hints": false,
+              "track": false,
+              "prompt": false,
+              "input": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "transcribe"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "prompt": false,
+              "input": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "agent"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "prompt"
+            ],
+            "properties": {
+              "context": false,
+              "inline": false,
+              "language_hints": false,
+              "track": false
+            }
+          }
         }
-      }
+      ]
+    },
+    "fragmentName": {
+      "description": "Název Fragmentu — soubor <název>.md ve složce %LOCALAPPDATA%\\Jarvis\\fragments; 1–64 znaků z A–Z a–z 0–9 . _ -, začíná písmenem nebo číslicí.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    },
+    "agentInput": {
+      "description": "Id dřívějšího kroku transcribe (jeho přepis jako řádky [mm:ss] <track>: text) nebo kroku agenta (jeho odpověď), adhoc, glossary(<Fragment>) nebo text(<Fragment>).",
+      "type": "string",
+      "pattern": "^(adhoc|[A-Za-z0-9][A-Za-z0-9._-]{0,31}|(glossary|text)\\([A-Za-z0-9][A-Za-z0-9._-]{0,63}\\))$"
     }
   }
 }
