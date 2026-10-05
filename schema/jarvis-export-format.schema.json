@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-export-format.schema.json",
+  "title": "ExportFormat Jarvise",
+  "description": "Soubor pod %LOCALAPPDATA%\\Jarvis\\exportformats\\<meeting|dictation>.json (Jarvis ADR-0043). `header` se vykreslí jednou, s tokeny {title}, {date}, {time}, {sessionId}; `line` se vykreslí jednou na každou promluvu, v pořadí podle času napříč Tracky, s tokeny {time}, {speaker}, {track}, {text}. Žádný token pro jméno účastníka - Speaker je jen číslo (CONTEXT.md).",
+  "type": "object",
+  "required": [
+    "header",
+    "line"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "description": "Odkaz na tohle schéma pro editor. Jarvis ho ignoruje.",
+      "type": "string",
+      "const": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-export-format.schema.json"
+    },
+    "schemaVersion": {
+      "description": "Verze tvaru souboru.",
+      "type": "string",
+      "const": "jarvis.export-format/1"
+    },
+    "header": {
+      "description": "Vykreslí se jednou, na začátek. Tokeny: {title} (název nahrávky, prázdný bez něj), {date}, {time} (začátek nahrávky, místní čas), {sessionId}.",
+      "type": "string",
+      "minLength": 1
+    },
+    "line": {
+      "description": "Vykreslí se jednou na každou promluvu (Reply), chronologicky napříč Tracky. Tokeny: {time}, {speaker} (číslo, nikdy jméno), {track}, {text}.",
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
