@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-settings.schema.json",
+  "title": "Uživatelské nastavení Jarvise",
+  "description": "settings.json v datovém kořeni Jarvise (%LOCALAPPDATA%\\Jarvis), uživatelská vrstva nastavení (ADR-0034, ADR-0065). Jarvis ho při startu vždy doplní na úplný soubor; mění se ručně, přes PUT /settings nebo příkazem jarvis settings set. Výchozí hodnoty a popis každého pole: jarvis settings nebo GET /settings/catalog.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "description": "Odkaz na tohle schéma pro editor. Jarvis z něj nic nečte; přijme jakoukoli adresu.",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "description": "Verze tvaru souboru. Jarvis píše vždy nejnovější; soubor s vyšší verzí, než zná, nečte ani nepřepíše.",
+      "type": "string",
+      "enum": [
+        "jarvis.settings/1",
+        "jarvis.settings/2",
+        "jarvis.settings/3",
+        "jarvis.settings/4"
+      ]
+    },
+    "manualMode": {
+      "description": "Ruční režim nových nahrávek (R-8.9): po stopu se přepis nespustí sám.",
+      "type": "boolean"
+    },
+    "defaultTemplates": {
+      "description": "Výchozí šablona přepisu pro každý typ nahrávky; „default“ je vestavěná.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "meeting": {
+          "description": "Schůzka.",
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "dictation": {
+          "description": "Diktát.",
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "online": {
+          "description": "Zastaralý název typu (ADR-0039); čte se jako meeting.",
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "room": {
+          "description": "Zastaralý název typu (ADR-0039); čte se jako meeting.",
+          "type": "string",
+          "pattern": "\\S"
+        }
+      }
+    },
+    "export": {
+      "description": "Export do souboru (ADR-0043).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pathPattern": {
+          "description": "Vzor cesty, kam jarvis export zapíše soubor (ADR-0043): tokeny <name>, <session-id> a datum/čas.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "meeting": {
+              "description": "Schůzka.",
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "dictation": {
+              "description": "Diktát.",
+              "type": "string",
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
+    },
+    "languageHints": {
+      "description": "Jazyky, ke kterým se přepis přikloní (R-3.1), třeba [\"cs\", \"en\"].",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "allowNames": {
+      "description": "Jméno člověka ve znovu použitelném zdroji jen nahlásit místo odmítnutí (ADR-0019). Přes API ho mění jen příkazová řádka.",
+      "type": "boolean"
+    },
+    "graph": {
+      "description": "Konektor na Microsoft 365 (ADR-0058).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "description": "Konektor na Microsoft 365 čte (ADR-0058).",
+          "type": "boolean"
+        },
+        "account": {
+          "description": "UPN jediného účtu konektoru, nikdy token; null: nikdo.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "@"
+        }
+      }
+    }
+  }
+}

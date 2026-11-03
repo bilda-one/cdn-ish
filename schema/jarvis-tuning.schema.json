@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-tuning.schema.json",
+  "title": "Ladicí parametry Jarvise",
+  "description": "tuning.json v datovém kořeni Jarvise, ladicí vrstva nastavení (R-8.7, ADR-0065). Každý parametr je uveden; null znamená naměřenou výchozí hodnotu, číslo ji přebíjí. Hodnota mimo naměřený rozsah se použije a Jarvis varuje proč. Čte se při startu Jarvise; přes API se jen čte (GET /settings/tuning, jarvis settings tuning).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "description": "Odkaz na tohle schéma pro editor. Jarvis z něj nic nečte; přijme jakoukoli adresu.",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "description": "Verze tvaru souboru.",
+      "type": "string",
+      "const": "jarvis.tuning/1"
+    },
+    "parameters": {
+      "description": "Ladicí parametry podle jména; výchozí hodnotu, rozsah a důvod uvádí komentář v souboru a jarvis settings get tuning.<JMÉNO>.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MIC_STALL_S": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "LOOPBACK_DEAD_S": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "DISK_FREE_WARNING_BYTES": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "DISK_STOP_RESERVE_BYTES": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PROCESSING_GRACE_WINDOW_S": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PROVIDER_RETENTION_H": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PROVIDER_RETRY_BACKOFF_MIN": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "AGENT_TIMEOUT_S": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PROVIDER_STORAGE_CEILING_BYTES": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PROVIDER_FILE_COUNT_CEILING": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PROVIDER_TRANSCRIPTION_COUNT_CEILING": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PROVIDER_MAX_AUDIO_SECONDS": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PROGRESS_STALE_S": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "REPLY_PAUSE_S": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PARK_LONG_RECORDING_MIN": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PARK_TRAILING_SILENCE_MIN": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PARK_SILENCE_LEVEL_DBFS": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "GRAPH_PAIRING_WAIT_S": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "GRAPH_POLL_INTERVAL_MIN": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "GRAPH_POLL_ATTEMPTS": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

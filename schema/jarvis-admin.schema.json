@@ -1,0 +1,200 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-admin.schema.json",
+  "title": "Administrátorské nastavení Jarvise",
+  "description": "admin.json v datovém kořeni Jarvise, administrátorská vrstva nastavení (ADR-0034, ADR-0065). Jarvis ho při startu vždy doplní na úplný soubor; mění se ručně, přes PUT /settings/admin nebo příkazem jarvis settings set a platí po restartu Jarvise. agent.claudeCli, allowedOrigins a names.forbiddenWords mění přes API jen příkazová řádka.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "description": "Odkaz na tohle schéma pro editor. Jarvis z něj nic nečte; přijme jakoukoli adresu.",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "description": "Verze tvaru souboru.",
+      "type": "string",
+      "const": "jarvis.admin/1"
+    },
+    "soniox": {
+      "description": "Přepisovací služba Soniox.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "apiBase": {
+          "description": "Adresa přepisovací služby, jen https; přepis se spustí jen se schváleným hostem (R-7.3, D16). null: vestavěná EU adresa.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^\\s*https://\\S+\\s*$"
+        },
+        "model": {
+          "description": "Model přepisovací služby; null: vestavěný.",
+          "pattern": "\\S",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "agent": {
+      "description": "Krok agenta (Claude Code CLI).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "description": "Model kroku agenta bez vlastního (ADR-0021); null: výchozí model Claude Code CLI.",
+          "pattern": "\\S",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "claudeCli": {
+          "description": "Úplná cesta ke claude.exe; null: hledá se na PATH a ve složce instalátoru.",
+          "pattern": "\\S",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contextGuidance": {
+          "description": "Text pro systémový prompt kroku agenta (ADR-0036); null: vestavěný.",
+          "pattern": "\\S",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "graph": {
+      "description": "Registrace konektoru na Microsoft 365 (ADR-0058).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "description": "ID registrace aplikace v Entra ID (GUID); null: konektor není nainstalovaný.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^\\s*[a-fA-F0-9]{8}-?[a-fA-F0-9]{4}-?[a-fA-F0-9]{4}-?[a-fA-F0-9]{4}-?[a-fA-F0-9]{12}\\s*$"
+        },
+        "tenantId": {
+          "description": "Tenant registrace (GUID nebo doména); null: konektor není nainstalovaný.",
+          "pattern": "\\S",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "fragmentsRoot": {
+      "description": "Úplná cesta ke složce Fragmentů (ADR-0049); null: <datový kořen>\\fragments.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^\\s*([A-Za-z]:[\\\\/]|\\\\\\\\[^\\\\/]+[\\\\/])"
+    },
+    "names": {
+      "description": "Strážce jmen.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "forbiddenWords": {
+          "description": "Samostatná slova, která strážce jmen hlásí jako jméno (ADR-0016).",
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "allowedOrigins": {
+      "description": "Originy prohlížeče, kterým Jarvis odpoví hlavičkami CORS (D37), tvaru http(s)://host[:port].",
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "pattern": "^\\s*https?://[^/?#\\s]+\\s*$"
+      }
+    },
+    "tuning": {
+      "description": "Zastaralé: ladicí parametry patří do tuning.json; Jarvis je odtud při startu přesune (ADR-0065).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MIC_STALL_S": {
+          "type": "number"
+        },
+        "LOOPBACK_DEAD_S": {
+          "type": "number"
+        },
+        "DISK_FREE_WARNING_BYTES": {
+          "type": "number"
+        },
+        "DISK_STOP_RESERVE_BYTES": {
+          "type": "number"
+        },
+        "PROCESSING_GRACE_WINDOW_S": {
+          "type": "number"
+        },
+        "PROVIDER_RETENTION_H": {
+          "type": "number"
+        },
+        "PROVIDER_RETRY_BACKOFF_MIN": {
+          "type": "number"
+        },
+        "AGENT_TIMEOUT_S": {
+          "type": "number"
+        },
+        "PROVIDER_STORAGE_CEILING_BYTES": {
+          "type": "number"
+        },
+        "PROVIDER_FILE_COUNT_CEILING": {
+          "type": "number"
+        },
+        "PROVIDER_TRANSCRIPTION_COUNT_CEILING": {
+          "type": "number"
+        },
+        "PROVIDER_MAX_AUDIO_SECONDS": {
+          "type": "number"
+        },
+        "PROGRESS_STALE_S": {
+          "type": "number"
+        },
+        "REPLY_PAUSE_S": {
+          "type": "number"
+        },
+        "PARK_LONG_RECORDING_MIN": {
+          "type": "number"
+        },
+        "PARK_TRAILING_SILENCE_MIN": {
+          "type": "number"
+        },
+        "PARK_SILENCE_LEVEL_DBFS": {
+          "type": "number"
+        },
+        "GRAPH_PAIRING_WAIT_S": {
+          "type": "number"
+        },
+        "GRAPH_POLL_INTERVAL_MIN": {
+          "type": "number"
+        },
+        "GRAPH_POLL_ATTEMPTS": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}
