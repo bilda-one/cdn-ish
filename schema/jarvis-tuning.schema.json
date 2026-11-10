@@ -139,6 +139,30 @@
             "number",
             "null"
           ]
+        },
+        "WORKER_MAX_ATTEMPTS": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "WORKER_CRASH_LIMIT": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "WORKER_CRASH_WINDOW_MIN": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "WORKER_STOP_DEADLINE_S": {
+          "type": [
+            "number",
+            "null"
+          ]
         }
       }
     }
