@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-tuning.schema.json",
   "title": "Ladicí parametry Jarvise",
-  "description": "tuning.json v datovém kořeni Jarvise, ladicí vrstva nastavení (R-8.7, ADR-0065). Každý parametr je uveden; null znamená naměřenou výchozí hodnotu, číslo ji přebíjí. Hodnota mimo naměřený rozsah se použije a Jarvis varuje proč. Čte se při startu Jarvise; přes API se jen čte (GET /settings/tuning, jarvis settings tuning).",
+  "description": "tuning.json v datovém kořeni Jarvise, ladicí vrstva nastavení (R-8.7, ADR-0065, ADR-0074). Každý parametr nese číslo, které platí, a příznak pinned. Nepřipnutý parametr (pinned: false) sleduje naměřenou výchozí hodnotu a po přeměření v nové verzi Jarvise se přepíše; připnutý, nebo ručně změněný, zůstane, dokud ho nezměníš. Hodnota mimo naměřený rozsah se použije a Jarvis varuje proč. Čte se při startu Jarvise. Starší tvar jarvis.tuning/1 (číslo nebo null) se pořád přečte a Jarvis ho zapíše jako /2.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -11,9 +11,12 @@
       "type": "string"
     },
     "schemaVersion": {
-      "description": "Verze tvaru souboru.",
+      "description": "Verze tvaru souboru. /1: číslo nebo null u každého parametru; /2: objekt s value a pinned.",
       "type": "string",
-      "const": "jarvis.tuning/1"
+      "enum": [
+        "jarvis.tuning/1",
+        "jarvis.tuning/2"
+      ]
     },
     "parameters": {
       "description": "Ladicí parametry podle jména; výchozí hodnotu, rozsah a důvod uvádí komentář v souboru a jarvis settings get tuning.<JMÉNO>.",
@@ -21,148 +24,350 @@
       "additionalProperties": false,
       "properties": {
         "MIC_STALL_S": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "LOOPBACK_DEAD_S": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "DISK_FREE_WARNING_BYTES": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "DISK_STOP_RESERVE_BYTES": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PROCESSING_GRACE_WINDOW_S": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PROVIDER_RETENTION_H": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PROVIDER_RETRY_BACKOFF_MIN": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "AGENT_TIMEOUT_S": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          ]
+        },
+        "AGATHA_TIMEOUT_S": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PROVIDER_STORAGE_CEILING_BYTES": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PROVIDER_FILE_COUNT_CEILING": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PROVIDER_TRANSCRIPTION_COUNT_CEILING": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PROVIDER_MAX_AUDIO_SECONDS": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PROGRESS_STALE_S": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "REPLY_PAUSE_S": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PARK_LONG_RECORDING_MIN": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PARK_TRAILING_SILENCE_MIN": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "PARK_SILENCE_LEVEL_DBFS": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "GRAPH_PAIRING_WAIT_S": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "GRAPH_POLL_INTERVAL_MIN": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "GRAPH_POLL_ATTEMPTS": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "WORKER_MAX_ATTEMPTS": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "WORKER_CRASH_LIMIT": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "WORKER_CRASH_WINDOW_MIN": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
         },
         "WORKER_STOP_DEADLINE_S": {
-          "type": [
-            "number",
-            "null"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
           ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "parameter": {
+      "description": "Jeden parametr: číslo, které platí, a zda je připnuté.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "pinned"
+      ],
+      "properties": {
+        "value": {
+          "description": "Číslo, které platí.",
+          "type": "number"
+        },
+        "pinned": {
+          "description": "true: číslo platí, dokud ho nezměníš. false: platí naměřený výchozí a po přeměření se přepíše.",
+          "type": "boolean"
         }
       }
     }

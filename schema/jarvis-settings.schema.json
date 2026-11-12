@@ -83,10 +83,6 @@
         "pattern": "\\S"
       }
     },
-    "allowNames": {
-      "description": "Jméno člověka ve znovu použitelném zdroji jen nahlásit místo odmítnutí (ADR-0019). Přes API ho mění jen příkazová řádka.",
-      "type": "boolean"
-    },
     "graph": {
       "description": "Konektor na Microsoft 365 (ADR-0058).",
       "type": "object",

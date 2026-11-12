@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/bilda-one/cdn-ish/refs/heads/main/schema/jarvis-admin.schema.json",
   "title": "Administrátorské nastavení Jarvise",
-  "description": "admin.json v datovém kořeni Jarvise, administrátorská vrstva nastavení (ADR-0034, ADR-0065). Jarvis ho při startu vždy doplní na úplný soubor; mění se ručně, přes PUT /settings/admin nebo příkazem jarvis settings set a platí po restartu Jarvise. agent.claudeCli, allowedOrigins a names.forbiddenWords mění přes API jen příkazová řádka.",
+  "description": "admin.json v datovém kořeni Jarvise, administrátorská vrstva nastavení (ADR-0034, ADR-0065). Jarvis ho při startu vždy doplní na úplný soubor; mění se ručně, přes PUT /settings/admin nebo příkazem jarvis settings set a platí po restartu Jarvise. agent.claudeCli a allowedOrigins mění přes API jen příkazová řádka.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -99,24 +99,6 @@
         "null"
       ],
       "pattern": "^\\s*([A-Za-z]:[\\\\/]|\\\\\\\\[^\\\\/]+[\\\\/])"
-    },
-    "names": {
-      "description": "Strážce jmen.",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "forbiddenWords": {
-          "description": "Samostatná slova, která strážce jmen hlásí jako jméno (ADR-0016).",
-          "type": [
-            "array",
-            "null"
-          ],
-          "items": {
-            "type": "string",
-            "pattern": "\\S"
-          }
-        }
-      }
     },
     "allowedOrigins": {
       "description": "Originy prohlížeče, kterým Jarvis odpoví hlavičkami CORS (D37), tvaru http(s)://host[:port].",
