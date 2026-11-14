@@ -111,6 +111,49 @@
         "pattern": "^\\s*https?://[^/?#\\s]+\\s*$"
       }
     },
+    "external": {
+      "description": "Vnější agent (ADR-0076): projekce /external a vnější akce. Mění se jen ručně v tomto souboru, přes API ne.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "description": "Zda host odpovídá na /external; výchozí false.",
+          "type": "boolean"
+        },
+        "actions": {
+          "description": "Akce, které v detailu nahrávky spustí tray: program a argumenty bez shellu, {id} se nahradí id nahrávky.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "executable"
+            ],
+            "properties": {
+              "name": {
+                "description": "Název akce, v seznamu jedinečný (bez ohledu na velikost písmen).",
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "executable": {
+                "description": "Program, který se spustí.",
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "args": {
+                "description": "Jednotlivé argumenty; {id} se nahradí id nahrávky.",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "tuning": {
       "description": "Zastaralé: ladicí parametry patří do tuning.json; Jarvis je odtud při startu přesune (ADR-0065).",
       "type": "object",
