@@ -17,7 +17,8 @@
         "jarvis.settings/1",
         "jarvis.settings/2",
         "jarvis.settings/3",
-        "jarvis.settings/4"
+        "jarvis.settings/4",
+        "jarvis.settings/5"
       ]
     },
     "manualMode": {
@@ -77,6 +78,14 @@
     },
     "languageHints": {
       "description": "Jazyky, ke kterým se přepis přikloní (R-3.1), třeba [\"cs\", \"en\"].",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "disabledTemplates": {
+      "description": "Šablony, které se nenabízejí k výběru (ADR-0080): dodané i vlastní, podle názvu bez ohledu na velikost písmen, třeba [\"general-2pass\"]. Nahrávka, která takovou šablonu už jmenuje, ji dál spustí; výchozí šablona typu, která na ni ukazuje, se nahradí vestavěnou default. Název, který žádná šablona nemá, se ignoruje.",
       "type": "array",
       "items": {
         "type": "string",
