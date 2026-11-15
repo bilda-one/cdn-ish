@@ -140,6 +140,19 @@
             }
           ]
         },
+        "TEMPLATE_BUILD_TIMEOUT_S": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/parameter"
+            },
+            {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          ]
+        },
         "PROVIDER_STORAGE_CEILING_BYTES": {
           "anyOf": [
             {
