@@ -13,7 +13,10 @@
     "schemaVersion": {
       "description": "Verze tvaru souboru.",
       "type": "string",
-      "const": "jarvis.admin/1"
+      "enum": [
+        "jarvis.admin/1",
+        "jarvis.admin/2"
+      ]
     },
     "soniox": {
       "description": "Přepisovací služba Soniox.",
@@ -121,7 +124,7 @@
           "type": "boolean"
         },
         "actions": {
-          "description": "Akce, které v detailu nahrávky spustí tray: program a argumenty bez shellu, {id} se nahradí id nahrávky.",
+          "description": "Akce, které v detailu nahrávky spustí tray: program a argumenty bez shellu, {id} se nahradí id nahrávky; běží ve své pracovní složce (ADR-0084).",
           "type": "array",
           "items": {
             "type": "object",
@@ -142,12 +145,17 @@
                 "pattern": "\\S"
               },
               "args": {
-                "description": "Jednotlivé argumenty; {id} se nahradí id nahrávky.",
+                "description": "Jednotlivé argumenty; {id} se nahradí id nahrávky a {jarvisMcp} konfigurací MCP serveru jarvis pro --mcp-config (ADR-0084).",
                 "type": "array",
                 "items": {
                   "type": "string",
                   "pattern": "\\S"
                 }
+              },
+              "workingDirectory": {
+                "description": "Úplná cesta k pracovní složce akce (ADR-0084); bez ní <datový kořen>\\actions\\<název akce>.",
+                "type": "string",
+                "pattern": "^\\s*([A-Za-z]:[\\\\/]|\\\\\\\\[^\\\\/]+[\\\\/])"
               }
             }
           }
